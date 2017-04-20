@@ -3,6 +3,6 @@ layout: default
 title: Proposal
 ---
 
-##Summary
+## Summary
 
   Testing.
