@@ -13,12 +13,19 @@ sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)  # flush print output immedi
 endLocationx = 0
 endLocationz = 10
 
+
+# ModSettings affects simulation speed
+
 missionXML='''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
             <Mission xmlns="http://ProjectMalmo.microsoft.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             
               <About>
                 <Summary>Hello world!</Summary>
               </About>
+              
+              <ModSettings>
+                <MsPerTick> 20 </MsPerTick>
+              </ModSettings>
               
               <ServerSection>
                 <ServerInitialConditions>
@@ -44,7 +51,7 @@ missionXML='''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
               </ServerSection>
               
               <AgentSection mode="Survival">
-                <Name>MalmoTutorialBot</Name>
+                <Name>Poro</Name>
                 <AgentStart>
                     <Placement x=".5" y="4" z="0"/>
                 </AgentStart>
@@ -56,10 +63,11 @@ missionXML='''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
                   <Block reward="5000.0" type="diamond_block" behaviour="onceOnly"/>
                   </RewardForTouchingBlockType>
                   
+                  
                   <RewardForTimeTaken 
                   initialReward="0"
                   delta="-1"
-                  density="MISSION_END"
+                  density="PER_TICK"
                   />
                   
                   <AgentQuitFromTouchingBlockType>
@@ -124,7 +132,11 @@ if __name__ == '__main__':
             time.sleep(0.1)
             world_state = agent_host.getWorldState()
 
+            print "reward: ", world_state.rewards[0].getValue()
+
             po.run(agent_host)
+
+
 
 
             for error in world_state.errors:
