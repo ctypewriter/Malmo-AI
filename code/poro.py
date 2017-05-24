@@ -18,7 +18,7 @@ class Poro(object):
         self.q_table = {}
         self.n, self.gamma, self.alpha = n, alpha, gamma
         self.x, self.y, self.z = destx, desty, destz
-
+    '''
     def init_dict(self):
         result = dict()
         result["Wall"] = None
@@ -119,6 +119,28 @@ class Poro(object):
         state = self.init_dict()
         state["Wall"] = self.is_wall(curx, curz)
         state["Direction"] = self.direction_to_goal(curx, cury, curz)
+        return state
+    '''
+    
+    def feature(self, blockA, blockB, blockC):
+        if blockA == u'air' and blockB == u'air' and blockC == u'air':
+            return 'drop'
+        elif blockA != u'air' and blockB == u'air' and blockC == u'air':
+            return 'flat'
+        elif (blockA != u'air' and blockB != u'air' and blockC != u'air') or \
+             (blockB == u'air' and blockC != u'air'):
+            return 'wall'
+        elif blockA != u'air' and blockB != u'air' and blockC == u'air':
+            return 'hill'
+        
+    def get_curr_state(self, grid): #TODO might have to pass agent_host or world state to get user location
+        # [N, E, W]
+        state = [None for i in range(3)]
+        state[0] = self.feature(grid[-1][7], grid[0][7], grid[1][7])
+        state[1] = self.feature(grid[-1][4], grid[0][3], grid[1][3])
+        state[2] = self.feature(grid[-1][5], grid[0][5], grid[1][5])
+        print(state)
+
         return state
     
     def update_q_table(self, tau, S, A, R, T):
