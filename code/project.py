@@ -90,49 +90,6 @@ missionXML = '''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
                 </AgentHandlers>
               </AgentSection>
             </Mission>'''
-def load_grid(world_state):
-    """
-    Used the agent observation API to get a 21 X 21 grid box around the agent (the agent is in the middle).
-
-    Args
-        world_state:    <object>    current agent world state
-
-    Returns
-        grid:   <list>  the world grid blocks represented as a list of blocks (see Tutorial.pdf)
-    """
-    grid = dict()
-    while world_state.is_mission_running:
-        #sys.stdout.write(".")
-        time.sleep(0.1)
-        world_state = agent_host.getWorldState()
-        if len(world_state.errors) > 0:
-            raise AssertionError('Could not load grid.')
-
-        if world_state.number_of_observations_since_last_state > 0:
-            msg = world_state.observations[-1].text
-            observations = json.loads(msg)
-            grid[-1] = observations.get(u'floor-1', 0)
-            grid[0] = observations.get(u'floor0', 0)
-            grid[1] = observations.get(u'floor1', 0)
-            break
-    return grid
-def get_position(world_state):
-    while world_state.is_mission_running:
-        #sys.stdout.write(".")
-        time.sleep(0.1)
-        world_state = agent_host.getWorldState()
-        if len(world_state.errors) > 0:
-            raise AssertionError('Could not load grid.')
-
-        if world_state.number_of_observations_since_last_state > 0:
-            msg = world_state.observations[-1].text
-            observations = json.loads(msg)
-            #grid = observations.get(u'floorAround', 0)
-            break
-    pos = tuple((floor(observations.get(u'XPos', 0)), \
-                 floor(observations.get(u'YPos', 0)), \
-                 floor(observations.get(u'ZPos', 0))))
-    return pos
 
 if __name__ == '__main__':
     # Create default Malmo objects:
@@ -184,10 +141,9 @@ if __name__ == '__main__':
         while world_state.is_mission_running:
             time.sleep(0.1)
             world_state = agent_host.getWorldState()
-            grid = load_grid(world_state)
-            pos = get_position(world_state)
-            state = po.get_curr_state(grid, pos[0], pos[1], pos[2])
-            print(state)
+            grid = po.load_grid(agent_host, world_state)
+            pos = po.get_position_and_yaw(agent_host, world_state)
+            state = po.get_curr_state(grid, pos)
             # for reward in world_state.rewards:
             #     print reward.getValue()
 
