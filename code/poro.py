@@ -1,8 +1,8 @@
-
-
 import sys
 import time
 from collections import deque
+from math import floor
+import json
 import random
 
 class Poro(object):
@@ -18,109 +18,22 @@ class Poro(object):
         self.q_table = {}
         self.n, self.gamma, self.alpha = n, alpha, gamma
         self.x, self.y, self.z = destx, desty, destz
-    '''
-    def init_dict(self):
-        result = dict()
-        result["Wall"] = None
-        result["Jump"] = None
-        result["Drop"] = None
-        result["None"] = None
-        result["Direction"] = None
-        return result
-
-    def direction_default(self):
-        result = dict()
-        result["N"] = False
-        result["NE"] = False
-        result["E"] = False
-        result["SE"] = False
-        result["S"] = False
-        result["SW"] = False
-        result["W"] = False
-        result["NW"] = False
-        return result
     
     def get_possible_actions(self, agent_host):
 
 
         return ["move 1", "move 0"] # TODO add more actions
     
-    def direction_to_goal(self, curx, cury, curz):
-        if curx == self.x:
+    def direction_to_goal(self, curx, curz):
+        if curx > self.x:
+            return "E"
+        elif curx < self.x:
+            return "W"
+        else:
             if curz > self.z:
                 return "S"
             else:
-                return "N"
-        elif curz == self.z:
-            if curx > self.x:
-                return "W"
-            else:
-                return "E"
-        else:
-            if curx > self.x and curz > self.z:
-                return "SE"
-            elif curx > self.x and curz < self.z:
-                return "NE"
-            elif curx < self.x and curz > self.z:
-                return "SW"
-            else:
-                return "NW"
-            
-    def is_wall(self, curx, curz):
-        wall = self.direction_default()
-        if curx == -29:
-            if curz == -29:
-                wall["NE"] = True
-                wall["E"] = True
-                wall["S"] = True
-                wall["SE"] = True
-                wall["SW"] = True
-            elif curz == 29:
-                wall["N"] = True
-                wall["E"] = True
-                wall["NE"] = True
-                wall["NW"] = True
-                wall["SE"] = True
-            else:
-                wall["E"] = True
-                wall["NE"] = True
-                wall["SE"] = True
-                
-        elif curx == 29:
-            if curz == -29:
-                wall["NW"] = True
-                wall["W"] = True
-                wall["S"] = True
-                wall["SW"] = True
-                wall["SE"] = True
-            elif curz == 29:
-                wall["W"] = True
-                wall["N"] = True
-                wall["NW"] = True
-                wall["NE"] = True
-                wall["SW"] = True
-            else:
-                wall["NW"] = True
-                wall["W"] = True
-                wall["SW"] = True
-
-        elif curz == 29:
-            wall["NW"] = True
-            wall["N"] = True
-            wall["NE"] = True
-
-        elif curz == -29:
-            wall["SW"] = True
-            wall["S"] = True
-            wall["SE"] = True
-        return wall
-    
-    def get_curr_state(self, grid, curx, cury, curz): #TODO might have to pass agent_host or world state to get user location
-        state = self.init_dict()
-        state["Wall"] = self.is_wall(curx, curz)
-        state["Direction"] = self.direction_to_goal(curx, cury, curz)
-        return state
-    '''
+                return "N" 
     
     def feature(self, blockA, blockB, blockC):
         if blockA == u'air' and blockB == u'air' and blockC == u'air':
@@ -133,15 +46,63 @@ class Poro(object):
         elif blockA != u'air' and blockB != u'air' and blockC == u'air':
             return 'hill'
         
-    def get_curr_state(self, grid): #TODO might have to pass agent_host or world state to get user location
-        # [N, E, W]
-        state = [None for i in range(3)]
+    def get_curr_state(self, grid, pos): #TODO might have to pass agent_host or world state to get user location
+        # [N, E, W, Goal_Direction, yaw]
+        state = [None for i in range(5)]
         state[0] = self.feature(grid[-1][7], grid[0][7], grid[1][7])
         state[1] = self.feature(grid[-1][4], grid[0][3], grid[1][3])
         state[2] = self.feature(grid[-1][5], grid[0][5], grid[1][5])
-        print(state)
+        state[3] = self.direction_to_goal(pos[0], pos[2])
+        state[4] = pos[3]
 
         return state
+    
+    def load_grid(self, agent_host, world_state):
+        """
+        Used the agent observation API to get a 21 X 21 grid box around the agent (the agent is in the middle).
+
+        Args
+            world_state:    <object>    current agent world state
+
+        Returns
+            grid:   <list>  the world grid blocks represented as a list of blocks (see Tutorial.pdf)
+        """
+        grid = dict()
+        while world_state.is_mission_running:
+            #sys.stdout.write(".")
+            time.sleep(0.1)
+            world_state = agent_host.getWorldState()
+            if len(world_state.errors) > 0:
+                raise AssertionError('Could not load grid.')
+
+            if world_state.number_of_observations_since_last_state > 0:
+                msg = world_state.observations[-1].text
+                observations = json.loads(msg)
+                grid[-1] = observations.get(u'floor-1', 0)
+                grid[0] = observations.get(u'floor0', 0)
+                grid[1] = observations.get(u'floor1', 0)
+                break
+        return grid
+
+    def get_position_and_yaw(self, agent_host, world_state):
+        while world_state.is_mission_running:
+            print("ran")
+            #sys.stdout.write(".")
+            time.sleep(0.1)
+            world_state = agent_host.getWorldState()
+            if len(world_state.errors) > 0:
+                raise AssertionError('Could not load grid.')
+
+            if world_state.number_of_observations_since_last_state > 0:
+                msg = world_state.observations[-1].text
+                observations = json.loads(msg)
+                #grid = observations.get(u'floorAround', 0)
+                break
+        pos = tuple((floor(observations.get(u'XPos', 0)), \
+                     floor(observations.get(u'YPos', 0)), \
+                     floor(observations.get(u'ZPos', 0)), \
+                     observations.get(u'Yaw', 0)))
+        return pos
     
     def update_q_table(self, tau, S, A, R, T):
         """Performs relevant updates for state tau.
