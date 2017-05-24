@@ -19,15 +19,108 @@ class Poro(object):
         self.n, self.gamma, self.alpha = n, alpha, gamma
         self.x, self.y, self.z = destx, desty, destz
 
+    def init_dict(self):
+        result = dict()
+        result["Wall"] = None
+        result["Jump"] = None
+        result["Drop"] = None
+        result["None"] = None
+        result["Direction"] = None
+        return result
+
+    def direction_default(self):
+        result = dict()
+        result["N"] = False
+        result["NE"] = False
+        result["E"] = False
+        result["SE"] = False
+        result["S"] = False
+        result["SW"] = False
+        result["W"] = False
+        result["NW"] = False
+        return result
+    
     def get_possible_actions(self, agent_host):
 
 
         return ["move 1", "move 0"] # TODO add more actions
+    
+    def direction_to_goal(self, curx, cury, curz):
+        if curx == self.x:
+            if curz > self.z:
+                return "S"
+            else:
+                return "N"
+        elif curz == self.z:
+            if curx > self.x:
+                return "W"
+            else:
+                return "E"
+        else:
+            if curx > self.x and curz > self.z:
+                return "SE"
+            elif curx > self.x and curz < self.z:
+                return "NE"
+            elif curx < self.x and curz > self.z:
+                return "SW"
+            else:
+                return "NW"
+            
+    def is_wall(self, curx, curz):
+        wall = self.direction_default()
+        if curx == -29:
+            if curz == -29:
+                wall["NE"] = True
+                wall["E"] = True
+                wall["S"] = True
+                wall["SE"] = True
+                wall["SW"] = True
+            elif curz == 29:
+                wall["N"] = True
+                wall["E"] = True
+                wall["NE"] = True
+                wall["NW"] = True
+                wall["SE"] = True
+            else:
+                wall["E"] = True
+                wall["NE"] = True
+                wall["SE"] = True
+                
+        elif curx == 29:
+            if curz == -29:
+                wall["NW"] = True
+                wall["W"] = True
+                wall["S"] = True
+                wall["SW"] = True
+                wall["SE"] = True
+            elif curz == 29:
+                wall["W"] = True
+                wall["N"] = True
+                wall["NW"] = True
+                wall["NE"] = True
+                wall["SW"] = True
+            else:
+                wall["NW"] = True
+                wall["W"] = True
+                wall["SW"] = True
 
-    def get_curr_state(self): #TODO might have to pass agent_host or world state to get user location
+        elif curz == 29:
+            wall["NW"] = True
+            wall["N"] = True
+            wall["NE"] = True
 
-        return
-
+        elif curz == -29:
+            wall["SW"] = True
+            wall["S"] = True
+            wall["SE"] = True
+        return wall
+    
+    def get_curr_state(self, grid, curx, cury, curz): #TODO might have to pass agent_host or world state to get user location
+        state = self.init_dict()
+        state["Wall"] = self.is_wall(curx, curz)
+        state["Direction"] = self.direction_to_goal(curx, cury, curz)
+        return state
+    
     def update_q_table(self, tau, S, A, R, T):
         """Performs relevant updates for state tau.
 
