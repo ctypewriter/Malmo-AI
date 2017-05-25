@@ -23,7 +23,7 @@ missionXML = '''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
               </About>
               
               <ModSettings>
-                <MsPerTick> 20 </MsPerTick>
+                <MsPerTick> 50 </MsPerTick>
               </ModSettings>
               
               <ServerSection>
@@ -140,15 +140,16 @@ if __name__ == '__main__':
 
         while world_state.is_mission_running:
             time.sleep(0.1)
-            # world_state = agent_host.getWorldState()
+            world_state = agent_host.getWorldState()
             # grid = po.load_grid(agent_host, world_state)
             # pos = po.get_position_and_yaw(agent_host, world_state)
             # state = po.get_curr_state(grid, pos)
             # for reward in world_state.rewards:
             #     print reward.getValue()
 
-            po.run(agent_host, world_state)
+            po.run(agent_host)
 
+            world_state = agent_host.getWorldState()
             for error in world_state.errors:
                 print "Error:", error.text
 

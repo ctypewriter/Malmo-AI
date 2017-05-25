@@ -46,19 +46,24 @@ class Poro(object):
         elif blockA != u'air' and blockB != u'air' and blockC == u'air':
             return 'hill'
         
-    def get_curr_state(self, agent_host, world_state):
+    def get_curr_state(self, agent_host):
         # [N, E, W, Goal_Direction, yaw]
-        pos = self.get_position_and_yaw(agent_host, world_state)
-        grid = self.load_grid(agent_host, world_state)
+
+
+        pos = self.get_position_and_yaw(agent_host, agent_host.getWorldState())
+        grid = self.load_grid(agent_host, agent_host.getWorldState())
 
         state = [None for i in range(5)]
-        state[0] = self.feature(grid[-1][7], grid[0][7], grid[1][7])
-        state[1] = self.feature(grid[-1][4], grid[0][3], grid[1][3])
-        state[2] = self.feature(grid[-1][5], grid[0][5], grid[1][5])
-        state[3] = self.direction_to_goal(pos[0], pos[2])
-        state[4] = pos[3]
+        world_state = agent_host.getWorldState()
 
-        return state
+        if (world_state.is_mission_running):
+            state[0] = self.feature(grid[-1][7], grid[0][7], grid[1][7])
+            state[1] = self.feature(grid[-1][4], grid[0][3], grid[1][3])
+            state[2] = self.feature(grid[-1][5], grid[0][5], grid[1][5])
+            state[3] = self.direction_to_goal(pos[0], pos[2])
+            state[4] = pos[3]
+
+        return tuple(state)
     
     def load_grid(self, agent_host, world_state):
         """
@@ -88,8 +93,8 @@ class Poro(object):
         return grid
 
     def get_position_and_yaw(self, agent_host, world_state):
+        pos = ()
         while world_state.is_mission_running:
-            print("ran")
             #sys.stdout.write(".")
             #time.sleep(0.1)
             world_state = agent_host.getWorldState()
@@ -101,10 +106,14 @@ class Poro(object):
                 observations = json.loads(msg)
                 #grid = observations.get(u'floorAround', 0)
                 break
-        pos = tuple((floor(observations.get(u'XPos', 0)), \
-                     floor(observations.get(u'YPos', 0)), \
-                     floor(observations.get(u'ZPos', 0)), \
-                     observations.get(u'Yaw', 0)))
+        try:
+            pos = tuple((floor(observations.get(u'XPos', 0)), \
+                         floor(observations.get(u'YPos', 0)), \
+                         floor(observations.get(u'ZPos', 0)), \
+                         observations.get(u'Yaw', 0)))
+
+        except:
+            pass
         return pos
     
     def update_q_table(self, tau, S, A, R, T):
@@ -125,56 +134,75 @@ class Poro(object):
         old_q = self.q_table[curr_s][curr_a]
         self.q_table[curr_s][curr_a] = old_q + self.alpha * (G - old_q)
 
-    def run(self, agent_host, world_state):
+    def run(self, agent_host):
 
-        if world_state.is_mission_running:
-            time.sleep(1)
-            print self.get_curr_state(agent_host, world_state)
+
+
+
+        # time.sleep(1)
+        # world_state = agent_host.getWorldState()
+        # while (world_state.is_mission_running):
+        #     world_state = agent_host.getWorldState()
+        #     state = self.get_curr_state(agent_host)
+        #     print state
+
+
 
         # Learning process
-        # S, A, R = deque(), deque(), deque()
-        # done_update = False
-        # while not done_update:
-        #     s0 = self.get_curr_state()
-        #     possible_actions = self.get_possible_actions(agent_host)
-        #
-        #     a0 = self.choose_action(s0, possible_actions, self.epsilon)
-        #     S.append(s0)
-        #     A.append(a0)
-        #     R.append(0)
-        #
-        #     # Running the below code results in an infinite loop (or one too long to be useful) TODO inplement terminal State
-        #     T = sys.maxint
-        #     for t in xrange(sys.maxint):
-        #         time.sleep(0.1) # TODO increase so actions are only chosen at a slower rate.
-        #         if t < T:
-        #
-        #             # TODO, change below lines, act should not return reward, if terminal state, reward = 5000, else -1.
-        #             current_r = self.act(agent_host, A[-1])
-        #             R.append(current_r)
-        #
-        #             # TODO if in terminal state.
-        #                 # T = t + 1
-        #                 # S.append('Term State') #Append terminal state
-        #                 # present_reward = current_r # Total reward
-        #                 # print "Reward:", present_reward
-        #             #else: TODO
-        #             s = self.get_curr_state()
-        #             S.append(s)
-        #             possible_actions = self.get_possible_actions(agent_host)
-        #             next_a = self.choose_action(s, possible_actions, self.epsilon)
-        #             A.append(next_a)
-        #
-        #         tau = t - self.n + 1
-        #         if tau >= 0:
-        #             self.update_q_table(tau, S, A, R, T)
-        #
-        #         if tau == T - 1:
-        #             while len(S) > 1:
-        #                 tau = tau + 1
-        #                 self.update_q_table(tau, S, A, R, T)
-        #             done_update = True
-        #             break
+        S, A, R = deque(), deque(), deque()
+        reward = 0
+        done_update = False
+        while not done_update:
+            s0 = self.get_curr_state(agent_host)
+            possible_actions = self.get_possible_actions(agent_host)
+
+            a0 = self.choose_action(s0, possible_actions, self.epsilon)
+            S.append(s0)
+            A.append(a0)
+            R.append(0)
+
+            # Running the below code results in an infinite loop (or one too long to be useful) TODO inplement terminal State
+            T = sys.maxint
+            for t in xrange(sys.maxint):
+                time.sleep(0.1) # TODO increase so actions are only chosen at a slower rate.
+                if t < T:
+
+                    # TODO, change below lines, act should not return reward, if terminal state, reward = 5000, else -1.
+                    current_r = self.act(agent_host, A[-1])
+                    #R.append(current_r)
+
+                    # Terminal State check
+                    world_state = agent_host.getWorldState()
+                    if (not world_state.is_mission_running):
+                        T = t + 1
+                        S.append('Term State')
+
+                        R.append(5000)
+                        reward = reward + 5000
+
+                        # present_reward = current_r # Total reward
+                        # print "Reward:", present_reward
+                    else:
+                        R.append(-1)
+                        reward -= 1
+                        s = self.get_curr_state(agent_host)
+                        S.append(s)
+                        possible_actions = self.get_possible_actions(agent_host)
+                        next_a = self.choose_action(s, possible_actions, self.epsilon)
+                        A.append(next_a)
+
+                print "Reward is currently: ", reward
+
+                tau = t - self.n + 1
+                if tau >= 0:
+                    self.update_q_table(tau, S, A, R, T)
+
+                if tau == T - 1:
+                    while len(S) > 1:
+                        tau = tau + 1
+                        self.update_q_table(tau, S, A, R, T)
+                    done_update = True
+                    break
 
 
 
@@ -183,6 +211,10 @@ class Poro(object):
         # agent_host.sendCommand("move -1")
         # time.sleep(1)
 
+
+    def act(self, agent_host, action):
+
+        agent_host.sendCommand(action)
 
     def choose_action(self, curr_state, possible_actions, eps):
         """Chooses an action according to eps-greedy policy. """
