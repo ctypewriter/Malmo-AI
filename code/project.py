@@ -140,14 +140,14 @@ if __name__ == '__main__':
 
         while world_state.is_mission_running:
             time.sleep(0.1)
-            world_state = agent_host.getWorldState()
-            grid = po.load_grid(agent_host, world_state)
-            pos = po.get_position_and_yaw(agent_host, world_state)
-            state = po.get_curr_state(grid, pos)
+            # world_state = agent_host.getWorldState()
+            # grid = po.load_grid(agent_host, world_state)
+            # pos = po.get_position_and_yaw(agent_host, world_state)
+            # state = po.get_curr_state(grid, pos)
             # for reward in world_state.rewards:
             #     print reward.getValue()
 
-            #po.run(agent_host)
+            po.run(agent_host, world_state)
 
             for error in world_state.errors:
                 print "Error:", error.text
