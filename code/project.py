@@ -11,6 +11,7 @@ from math import floor
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)  # flush print output immediately
 
 endLocationx = 0
+endLocationy = 3
 endLocationz = 19
 
 # ModSettings affects simulation speed
@@ -57,7 +58,7 @@ missionXML = '''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
                 <AgentHandlers>
                   <ObservationFromFullStats/>
                   <ContinuousMovementCommands turnSpeedDegs="180"/>
-                  
+                  <MissionQuitCommands/>
                   <RewardForTouchingBlockType>
                   <Block reward="5000.0" type="diamond_block" behaviour="onceOnly"/>
                   </RewardForTouchingBlockType>
@@ -84,14 +85,15 @@ missionXML = '''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
                   density="PER_TICK"
                   />
                   
-                  <AgentQuitFromTouchingBlockType>
-                    <Block type="diamond_block" />
-                   </AgentQuitFromTouchingBlockType>
+
                 </AgentHandlers>
               </AgentSection>
             </Mission>'''
 
 if __name__ == '__main__':
+
+
+
     # Create default Malmo objects:
 
     agent_host = MalmoPython.AgentHost()
@@ -105,14 +107,18 @@ if __name__ == '__main__':
         print agent_host.getUsage()
         exit(0)
 
-    # Runs AI however many times
-    for i in range(5):  # TODO change number of times to number of generations * population/generation
-        my_mission = MalmoPython.MissionSpec(missionXML, True)
-        # my_mission.forceWorldReset()
-        my_mission.drawBlock(endLocationx, 3, endLocationz, "diamond_block")  # Draws the target location
-        my_mission_record = MalmoPython.MissionRecordSpec()
+    po = poro.Poro(endLocationx, endLocationy, endLocationz)  # AI instantance creator
 
-        po = poro.Poro(endLocationx, 4, endLocationz)  # AI instantance creator
+    # Runs AI however many times
+    num_runs = 10000
+    for i in range(num_runs):  # TODO change number of times to number of generations * population/generation
+        my_mission = MalmoPython.MissionSpec(missionXML, True)
+        my_mission_record = MalmoPython.MissionRecordSpec()
+        # my_mission.forceWorldReset()
+        my_mission.drawBlock(endLocationx, endLocationy, endLocationz, "diamond_block")  # Draws the target location
+
+
+
 
         # Attempt to start a mission:
         max_retries = 3
@@ -128,34 +134,29 @@ if __name__ == '__main__':
                     time.sleep(2)
 
         # Loop until mission starts:
-        print "Waiting for the mission to start ",
         world_state = agent_host.getWorldState()
         while not world_state.has_mission_begun:
             time.sleep(0.1)
             world_state = agent_host.getWorldState()
 
-        print
-        print "Mission running ",
-        # Loop until mission ends:
 
-        while world_state.is_mission_running:
-            time.sleep(0.1)
-            world_state = agent_host.getWorldState()
-            # grid = po.load_grid(agent_host, world_state)
-            # pos = po.get_position_and_yaw(agent_host, world_state)
-            # state = po.get_curr_state(grid, pos)
-            # for reward in world_state.rewards:
-            #     print reward.getValue()
+        world_state = agent_host.getWorldState()
+        # grid = po.load_grid(agent_host, world_state)
+        # pos = po.get_position_and_yaw(agent_host, world_state)
+        # state = po.get_curr_state(grid, pos)
+        # for reward in world_state.rewards:
+        #     print reward.getValue()
 
-            po.run(agent_host)
+        print i, ' ',
+        po.run(agent_host)
 
-            world_state = agent_host.getWorldState()
-            for error in world_state.errors:
-                print "Error:", error.text
+        world_state = agent_host.getWorldState()
+        for error in world_state.errors:
+            print "Error:", error.text
 
         # returns reward result from the AI
 
-
+        agent_host.sendCommand('quit')
         print
         print "Mission ended"
         # Mission has ended.

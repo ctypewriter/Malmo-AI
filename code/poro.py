@@ -1,12 +1,14 @@
 import sys
 import time
 from collections import deque
-from math import floor
+import math
 import json
 import random
 
+actions = ["move 1", "move -1", "jump 1", "strafe 1", "strafe -1"]
+
 class Poro(object):
-    def __init__(self, destx, desty, destz, alpha=.3, gamma=1, n=1 ):
+    def __init__(self, destx, desty, destz, alpha=1, gamma=.5, n=5 ):
         """Constructing an RL agent.
 
                 Args
@@ -18,22 +20,35 @@ class Poro(object):
         self.q_table = {}
         self.n, self.gamma, self.alpha = n, alpha, gamma
         self.x, self.y, self.z = destx, desty, destz
+        self.currX, self.currY, self.currZ = 0, 0, 0 # Agent's current position, will be overwritten when program runs
     
     def get_possible_actions(self, agent_host):
 
 
-        return ["move 1", "move 0"] # TODO add more actions
+        return actions
     
     def direction_to_goal(self, curx, curz):
-        if curz > self.z:
-            return "S"
-        elif curz < self.z:
-            return "N"
-        else:
+
+        if math.fabs(curz - self.z) >= math.fabs(curx - self.x):
+            if curz > self.z:
+                return "S"
+            else:
+                return "N"
+        elif math.fabs(curz - self.z) < math.fabs(curx - self.x):
             if curx > self.x:
                 return "E"
             else:
                 return "W"
+
+        # if curz > self.z:
+        #     return "S"
+        # elif curz < self.z:
+        #     return "N"
+        # else:
+        #     if curx > self.x:
+        #         return "E"
+        #     else:
+        #         return "W"
     
     def feature(self, blockA, blockB, blockC):
         if blockA == u'air' and blockB == u'air' and blockC == u'air':
@@ -48,7 +63,6 @@ class Poro(object):
         
     def get_curr_state(self, agent_host):
         # [N, E, W, Goal_Direction, yaw]
-
 
         pos = self.get_position_and_yaw(agent_host, agent_host.getWorldState())
         grid = self.load_grid(agent_host, agent_host.getWorldState())
@@ -107,10 +121,13 @@ class Poro(object):
                 #grid = observations.get(u'floorAround', 0)
                 break
         try:
-            pos = tuple((floor(observations.get(u'XPos', 0)), \
-                         floor(observations.get(u'YPos', 0)), \
-                         floor(observations.get(u'ZPos', 0)), \
+            pos = tuple((math.floor(observations.get(u'XPos', 0)), \
+                         math.floor(observations.get(u'YPos', 0)), \
+                         math.floor(observations.get(u'ZPos', 0)), \
                          observations.get(u'Yaw', 0)))
+            self.currX = observations.get(u'XPos', 0)
+            self.currY = observations.get(u'YPos', 0)
+            self.currZ = observations.get(u'ZPos', 0)
 
         except:
             pass
@@ -127,6 +144,13 @@ class Poro(object):
             T:   <int>      terminating state index
         """
         curr_s, curr_a, curr_r = S.popleft(), A.popleft(), R.popleft()
+
+
+        # print curr_s[0], None, curr_s[0] is None, curr_s == "None"
+
+        if curr_s[0] is None or curr_s[-1] is None:
+            return
+
         G = sum([self.gamma ** i * R[i] for i in range(len(S))])
         if tau + self.n < T:
             G += self.gamma ** self.n * self.q_table[S[-1]][A[-1]]
@@ -135,19 +159,6 @@ class Poro(object):
         self.q_table[curr_s][curr_a] = old_q + self.alpha * (G - old_q)
 
     def run(self, agent_host):
-
-
-
-
-        # time.sleep(1)
-        # world_state = agent_host.getWorldState()
-        # while (world_state.is_mission_running):
-        #     world_state = agent_host.getWorldState()
-        #     state = self.get_curr_state(agent_host)
-        #     print state
-
-
-
         # Learning process
         S, A, R = deque(), deque(), deque()
         reward = 0
@@ -164,34 +175,42 @@ class Poro(object):
             # Running the below code results in an infinite loop (or one too long to be useful) TODO inplement terminal State
             T = sys.maxint
             for t in xrange(sys.maxint):
-                time.sleep(0.1) # TODO increase so actions are only chosen at a slower rate.
                 if t < T:
 
                     # TODO, change below lines, act should not return reward, if terminal state, reward = 5000, else -1.
                     current_r = self.act(agent_host, A[-1])
-                    #R.append(current_r)
+
 
                     # Terminal State check
                     world_state = agent_host.getWorldState()
-                    if (not world_state.is_mission_running):
+                    if (math.fabs(self.currX - self.x) < 2 and math.fabs(self.currY - self.y) < 2 and math.fabs(self.currZ - self.z) < 2):
                         T = t + 1
                         S.append('Term State')
 
-                        R.append(5000)
-                        reward = reward + 5000
+                        R.append(1000)
+                        reward = reward + 1000
 
                         # present_reward = current_r # Total reward
                         # print "Reward:", present_reward
+
+                    elif not world_state.is_mission_running:
+                        T = t + 1
+                        S.append('Fail State')
+
+                        R.append(-math.fabs(self.currX - self.x) - math.fabs(self.currY - self.y) - math.fabs(self.currZ - self.z))
+                        reward = reward - math.fabs(self.currX - self.x) - math.fabs(self.currY - self.y) - math.fabs(self.currZ - self.z)
                     else:
-                        R.append(-1)
-                        reward -= 1
+                        # R.append(-1)
+                        R.append(-math.fabs(self.currX - self.x) - math.fabs(self.currY - self.y) - math.fabs(self.currZ - self.z))
+                        reward += -math.fabs(self.currX - self.x) - math.fabs(self.currY - self.y) - math.fabs(self.currZ - self.z)
                         s = self.get_curr_state(agent_host)
+
                         S.append(s)
                         possible_actions = self.get_possible_actions(agent_host)
                         next_a = self.choose_action(s, possible_actions, self.epsilon)
                         A.append(next_a)
 
-                print "Reward is currently: ", reward
+
 
                 tau = t - self.n + 1
                 if tau >= 0:
@@ -204,8 +223,8 @@ class Poro(object):
                     done_update = True
                     break
 
-
-
+        print "Reward is : ", reward
+        print "Q-table is : ", self.q_table
         #agent_host.sendCommand("move 1")
         # time.sleep(1)
         # agent_host.sendCommand("move -1")
@@ -214,13 +233,26 @@ class Poro(object):
 
     def act(self, agent_host, action):
 
+
+        if action == "move 1" or action == "move -1":
+            agent_host.sendCommand("strafe 0")
+        elif action == "strafe 1" or action == "strafe -1":
+            agent_host.sendCommand("move 0")
+
         agent_host.sendCommand(action)
+        time.sleep(.1)
+
+        agent_host.sendCommand("jump 0")
+        time.sleep(.5)
 
     def choose_action(self, curr_state, possible_actions, eps):
         """Chooses an action according to eps-greedy policy. """
 
         # initialize state in q_table if needed
-        if curr_state not in self.q_table:
+        if curr_state[0] is None or curr_state[-1] is None:
+            a = random.randint(0, len(possible_actions) - 1)
+            return possible_actions[a]
+        elif curr_state not in self.q_table:
             self.q_table[curr_state] = {}
         for action in possible_actions:
             if action not in self.q_table[curr_state]:
