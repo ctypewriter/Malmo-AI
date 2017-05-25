@@ -25,15 +25,15 @@ class Poro(object):
         return ["move 1", "move 0"] # TODO add more actions
     
     def direction_to_goal(self, curx, curz):
-        if curx > self.x:
-            return "E"
-        elif curx < self.x:
-            return "W"
+        if curz > self.z:
+            return "S"
+        elif curz < self.z:
+            return "N"
         else:
-            if curz > self.z:
-                return "S"
+            if curx > self.x:
+                return "E"
             else:
-                return "N" 
+                return "W"
     
     def feature(self, blockA, blockB, blockC):
         if blockA == u'air' and blockB == u'air' and blockC == u'air':
