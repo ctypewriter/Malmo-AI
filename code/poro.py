@@ -161,7 +161,6 @@ class Poro(object):
             A.append(a0)
             R.append(0)
 
-            # Running the below code results in an infinite loop (or one too long to be useful) TODO inplement terminal State
             T = sys.maxint
             for t in xrange(sys.maxint):
                 if t < T:
@@ -179,8 +178,6 @@ class Poro(object):
                         R.append(1000)
                         reward = reward + 1000
 
-                        # present_reward = current_r # Total reward
-                        # print "Reward:", present_reward
                     # Mission failed state
                     elif not world_state.is_mission_running:
                         T = t + 1
