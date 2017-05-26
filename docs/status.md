@@ -32,4 +32,5 @@ States:
   The second and most important part of the state definition is a variable (N,E,S,W) that determines the general direction the goal is from the AI.
   
 ![State Figure](https://raw.githubusercontent.com/ctypewriter/Malmo-AI/master/docs/StateDemo.PNG)
+
 The above figure shows the approximation the AI uses to determine the general direction to the goal, depending on which quadrant the AI current resides in. This approximation is core to the AI because it limits the state space, giving the AI just enough information to make its way to the goal, but not encumbering it with an excess number of states. By limiting the number of states, the AI is able to learn, and then recognize a few, specific situations, as opposed to learning optimal actions in every single tile of the world or some other unreasonable metric.
