@@ -3,7 +3,7 @@ layout: default
 title:  Team
 ---
 
-# {{ page.title }}
+# {{ Poro Pathfinder }}
 
 
 ## Cara Zhu
