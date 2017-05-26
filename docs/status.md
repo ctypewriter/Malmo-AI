@@ -58,3 +58,6 @@ Tying it together:
       Total Reward = Goal reward + start distance from goal - n * negative reward for action
 
   As can be seen from the above formula, the reward is inversely proportional to the number of actions taken to reach the goal. As such, the AI's performance is evaluted by inspecting the reward of different trials of the course of the learning process.
+
+![Reward Plot](https://raw.githubusercontent.com/ctypewriter/Poro-Pathfinder/master/docs/rewardplot.bmp)
+
