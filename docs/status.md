@@ -57,7 +57,19 @@ Tying it together:
   
       Total Reward = Goal reward + start distance from goal - n * negative reward for action
 
-  As can be seen from the above formula, the reward is inversely proportional to the number of actions taken to reach the goal. As such, the AI's performance is evaluted by inspecting the reward of different trials of the course of the learning process.
+  As can be seen from the above formula, the reward is inversely proportional to the number of actions taken to reach the goal. As such, the AI's performance is evaluted by inspecting the reward of different trials of the course of the learning process. (Higher reward = less actions taken = Better Performance)
 
 ![Reward Plot](https://raw.githubusercontent.com/ctypewriter/Poro-Pathfinder/master/docs/rewardplot.bmp)
 
+  The above graph shows that the AI works more or less as expected. During the first trial, it has no information about its expected rewards for each state/action pair, so it requires a couple of actions to realize the optimal action. This performance is expected due to the generalized states. The AI only needs to learn actions for each state rather than each position. From then on, the reward is relatively consistant as the AI has already learned how to navigate to the goal. Small variance between trials is expected due to the greedy epsilon algorithm which causes the AI to occasionally choose non-optimal solutions.
+  
+  There is some sort of abnormality during trial 9 and 10, which may be due to the epsilon greedy algorithm or because the AI enters a state it is unfamiliar with. More testing is required to flesh out this issue. Regardless of the issue, the algorithm is able to reach the optimal reward again within a couple of trials due to the reward function punishing bad actions. This shows that at the very least, the reward function works as intended.
+  
+  
+# Remaining Goals/Challenges
+
+  As of now, the AI has not reached it's goal of traversing mountains and hills. It's action space is currently very limited, making the AI unable to jump. The AI's performance has also no been tested with obstacles that it must navigate around.
+  
+  Idealy, the AI needs to be tested and have sufficient performance in such cases. To do so, addition actions must be added as well as a pruning of actions depending on the state. For example, when facing a wall, the forward move action should be pruned from the action space to prevent the AI from stagnating. 
+  
+  Currently it is unknown how difficult it will be to adapt the AI to handle obstacles and different elavations. It is difficult to say whether it will be a progress block or testing. One concern however, is that the AI sometimes unlearns optimal actions for a state which is not expected performance and will be difficult to debug. 
