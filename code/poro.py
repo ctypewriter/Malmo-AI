@@ -54,20 +54,21 @@ class Poro(object):
             return 'hill'
         
     def get_curr_state(self, agent_host):
-        # [N, E, W, Goal_Direction, yaw]
+        # [N, E, S, W, Goal_Direction, yaw]
 
         pos = self.get_position_and_yaw(agent_host, agent_host.getWorldState())
         grid = self.load_grid(agent_host, agent_host.getWorldState())
 
-        state = [None for i in range(5)]
+        state = [None for i in range(6)]
         world_state = agent_host.getWorldState()
 
         if (world_state.is_mission_running):
             state[0] = self.feature(grid[-1][7], grid[0][7], grid[1][7])
             state[1] = self.feature(grid[-1][4], grid[0][3], grid[1][3])
-            state[2] = self.feature(grid[-1][5], grid[0][5], grid[1][5])
-            state[3] = self.direction_to_goal(pos[0], pos[2])
-            state[4] = pos[3]
+            state[2] = self.feature(grid[-1][1], grid[0][1], grid[1][1])
+            state[3] = self.feature(grid[-1][5], grid[0][5], grid[1][5])
+            state[4] = self.direction_to_goal(pos[0], pos[2])
+            state[5] = pos[3]
 
         return tuple(state)
     
