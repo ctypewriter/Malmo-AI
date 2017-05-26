@@ -11,7 +11,7 @@ from math import floor
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)  # flush print output immediately
 
 endLocationx = 0
-endLocationy = 3
+endLocationy = 4
 endLocationz = 19
 
 # ModSettings affects simulation speed
@@ -20,11 +20,11 @@ missionXML = '''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
             <Mission xmlns="http://ProjectMalmo.microsoft.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             
               <About>
-                <Summary>Hello world!</Summary>
+                <Summary>Poro is looking for the diamond!</Summary>
               </About>
               
               <ModSettings>
-                <MsPerTick> 50 </MsPerTick>
+                <MsPerTick> 25 </MsPerTick>
               </ModSettings>
               
               <ServerSection>
@@ -53,7 +53,7 @@ missionXML = '''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
               <AgentSection mode="Survival">
                 <Name>Poro</Name>
                 <AgentStart>
-                    <Placement x=".5" y="4" z="0"/>
+                    <Placement x=".5" y="4" z=".5"/>
                 </AgentStart>
                 <AgentHandlers>
                   <ObservationFromFullStats/>
@@ -105,7 +105,8 @@ if __name__ == '__main__':
         print agent_host.getUsage()
         exit(0)
 
-    po = poro.Poro(endLocationx, endLocationy, endLocationz)  # AI instantance creator
+    # .5 is the offset for center of the block
+    po = poro.Poro(endLocationx + .5, endLocationy + .5 , endLocationz + .5)  # AI instantance creator
 
     # Runs AI however many times
     num_runs = 10000

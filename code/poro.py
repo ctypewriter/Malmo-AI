@@ -5,7 +5,7 @@ import math
 import json
 import random
 
-actions = ["move .5", "move -.5", "strafe .5", "strafe -.5"] # "jump 1",
+actions = ["move .45", "move -.45", "strafe .45", "strafe -.45"] # "jump 1",
 
 
 class Poro(object):
@@ -59,7 +59,7 @@ class Poro(object):
         pos = self.get_position_and_yaw(agent_host, agent_host.getWorldState())
         grid = self.load_grid(agent_host, agent_host.getWorldState())
 
-        state = [None for i in range(6)]
+        state = [None for i in range(5)]
         world_state = agent_host.getWorldState()
 
         if (world_state.is_mission_running):
@@ -68,7 +68,7 @@ class Poro(object):
             state[2] = self.feature(grid[-1][1], grid[0][1], grid[1][1])
             state[3] = self.feature(grid[-1][5], grid[0][5], grid[1][5])
             state[4] = self.direction_to_goal(pos[0], pos[2])
-            state[5] = pos[3]
+            # state[5] = pos[3]
 
         return tuple(state)
     
@@ -156,7 +156,7 @@ class Poro(object):
             # Get beginning state/action
             s0 = self.get_curr_state(agent_host)
             oldx, oldy, oldz = self.currX, self.currY, self.currZ
-            oldDistance = math.fabs(self.currX - self.x) + math.fabs(self.currY - self.y) + math.fabs(self.currZ - self.z)
+            oldDistance = math.sqrt(math.fabs(self.currX - self.x)**2 + math.fabs(self.currY - self.y)**2 + math.fabs(self.currZ - self.z)**2)
 
             possible_actions = self.get_possible_actions(agent_host)
 
@@ -187,13 +187,13 @@ class Poro(object):
 
                         # Sets currX/Y/Z
                         s = self.get_curr_state(agent_host)
-                        newDistance = math.fabs(self.currX - self.x) + math.fabs(self.currY - self.y) + math.fabs(self.currZ - self.z)
+                        newDistance = math.sqrt(math.fabs(self.currX - self.x)**2 + math.fabs(self.currY - self.y)**2 + math.fabs(self.currZ - self.z)**2)
 
                         # Reward based on distance gained or lost from goal ( x + y + z, NOT TRUE DISTANCE)
                         R.append(oldDistance - newDistance - .5)
                         reward += oldDistance - newDistance - .5
 
-                        print "Reward change: ", oldDistance - newDistance - 1
+                        # print "Reward change: ", oldDistance - newDistance - 1
 
                         oldDistance = newDistance
 
@@ -232,11 +232,11 @@ class Poro(object):
             agent_host.sendCommand("move 0")
 
         agent_host.sendCommand(action)
-        time.sleep(.1)
+        time.sleep(.05)
 
         # Prevent ai from being jump happy
         agent_host.sendCommand("jump 0")
-        time.sleep(.5) # Let action resolve/ AI land
+        time.sleep(.25) # Let action resolve/ AI land
 
         agent_host.sendCommand("move 0")
         agent_host.sendCommand("strafe 0")
