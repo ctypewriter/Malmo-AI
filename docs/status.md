@@ -34,3 +34,16 @@ States:
 ![State Figure](https://raw.githubusercontent.com/ctypewriter/Malmo-AI/master/docs/StateDemo.PNG)
 
 The above figure shows the approximation the AI uses to determine the general direction to the goal, depending on which quadrant the AI current resides in. This approximation is core to the AI because it limits the state space, giving the AI just enough information to make its way to the goal, but not encumbering it with an excess number of states. By limiting the number of states, the AI is able to learn, and then recognize a few, specific situations, as opposed to learning optimal actions in every single tile of the world or some other unreasonable metric.
+
+
+Reward:
+
+The reward has doubles as both a rating of the AI as well as helps the AI learn ideal actions for each state. The way the reward is determined is by measuring the change in straight line distance from the AI to the goal between actions. A negative constant (c) is then added on to the reward to teach the AI not to do stagnant actions (walking into a wall).
+
+    Reward for an action = oldDistance from goal - newDistance from goal - c
+
+The AI also receives a reward for reaching its goal (touching its goal).
+
+This reward scheme promotes actions that help the agent progress towards the goal, while punishing actions that distance the reward from the goal. Because of this, the AI is able to quickly learn favorable actions.
+
+
