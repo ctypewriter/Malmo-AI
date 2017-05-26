@@ -11,7 +11,7 @@ from math import floor
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)  # flush print output immediately
 
 endLocationx = 0
-endLocationy = 4
+endLocationy = 3
 endLocationz = 19
 
 # ModSettings affects simulation speed

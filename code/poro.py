@@ -9,7 +9,7 @@ actions = ["move .45", "move -.45", "strafe .45", "strafe -.45"] # "jump 1",
 
 
 class Poro(object):
-    def __init__(self, destx, desty, destz, alpha=1, gamma=.5, n=1 ):
+    def __init__(self, destx, desty, destz, alpha=1, gamma=.3, n=3):
         """Constructing an RL agent.
 
                 Args
@@ -190,8 +190,8 @@ class Poro(object):
                         newDistance = math.sqrt(math.fabs(self.currX - self.x)**2 + math.fabs(self.currY - self.y)**2 + math.fabs(self.currZ - self.z)**2)
 
                         # Reward based on distance gained or lost from goal ( x + y + z, NOT TRUE DISTANCE)
-                        R.append(oldDistance - newDistance - .5)
-                        reward += oldDistance - newDistance - .5
+                        R.append((oldDistance - newDistance - .5))
+                        reward += (oldDistance - newDistance - .5)
 
                         # print "Reward change: ", oldDistance - newDistance - 1
 
