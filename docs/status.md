@@ -28,3 +28,5 @@ States:
   The states of this AI can be split into 2 distinct parts. The first is the features of the 4 adjacent blocks. Each of these blocks can have a value of (drop, flat, hill, wall). This is mainly to help the AI figure out how to move up and down elevations. As the demo current does not contain any hills or mountains, this part mainly serves as a placeholder.
   
   The second and most important part of the state definition is a variable (N,E,S,W) that determines the general direction the goal is from the AI.
+  
+ ![State Figure](https://raw.githubusercontent.com/ctypewriter/Malmo-AI/master/docs/StateDemo.PNG)
