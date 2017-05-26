@@ -3,14 +3,14 @@ layout: default
 title:  Team
 ---
 
-# {{ page.title }}
+# {{ Poro Pathfinder }}
 
 
-## USER 1
+## Cara Zhu
 ***UCI Net ID***: mingyez
 
-## USER 2
+## David Lu
 ***UCI Net ID***: ludm
 
-## USER 3
+## Tetsu Kobayashi
 ***UCI Net ID***: tjkobaya
