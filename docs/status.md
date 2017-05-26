@@ -14,7 +14,7 @@ Video link goes HERE
 ## Approach
   The AI uses q-learning, specifically, it creates a q-table which for each state, lists the expected reward for each action that can be done in that state. The rewards are initially 0 and the q-table is learned through randomly selecting actions in the beginning. As some q values change, the AI selects the highest q-value action in the current state a majority of the time (1-epsilon probabilty) and randomly chooses a random action with epsilon probablity. The q table is updated using the following formula in the case where future actions do not propagate down and affect the currect q value.
   
-    Q(s,a) = Q(s,a) + alpha( gamma( previous reward + q value of next action) - Q(s,a) )
+    Q(s,a) = Q(s,a) + alpha( gamma( reward of a + q value of next action) - Q(s,a) )
   
   where gamma and alpha are user specified variables. Alpha affects how quickly Q values change and Gamma affects the weight of the current reward and expected reward.
   
@@ -38,12 +38,23 @@ The above figure shows the approximation the AI uses to determine the general di
 
 Reward:
 
-The reward has doubles as both a rating of the AI as well as helps the AI learn ideal actions for each state. The way the reward is determined is by measuring the change in straight line distance from the AI to the goal between actions. A negative constant (c) is then added on to the reward to teach the AI not to do stagnant actions (walking into a wall).
+The reward doubles as both a rating of the AI as well as helps the AI learn ideal actions for each state. The way the reward is determined is by measuring the change in straight line distance from the AI to the goal between actions. A negative constant (c) is then added on to the reward to teach the AI not to do stagnant actions (walking into a wall).
 
     Reward for an action = oldDistance from goal - newDistance from goal - c
 
 The AI also receives a reward for reaching its goal (touching its goal).
 
-This reward scheme promotes actions that help the agent progress towards the goal, while punishing actions that distance the reward from the goal. Because of this, the AI is able to quickly learn favorable actions.
+This reward scheme promotes actions that help the agent progress towards the goal, while punishing actions that distance the reward from the goal. Because of this, the AI is able to quickly learn favorable actions. 
 
+Tying it together:
 
+  Whenever the AI takes an action, it uses the reward gained or lost to rate the performance of the action, making it more likely to do the action in the future if the reward was positive. Conversely, actions that result in negative rewards are less likely to be done in the future. On top of this, the AI also rates the action based on the expected value of the next state/action pair, which propagates down to previous actions. Because of this, even though an action may have an immediate, negative reward, it may still be chosen in the future if the resulting state generally performs well. The AI learns from each action, which carries over from trial to trial, resulting in relatively consistant performance as trials progress.
+  
+  
+## Evaluation
+
+  The total reward is a function of the distance traveled, a base reward for reaching the goal, and the number of actions taken (n). 
+  
+      Total Reward = Goal reward + start distance from goal - n * negative reward for action
+
+  As can be seen from the above formula, the reward is inversely proportional to the number of actions taken to reach the goal. As such, the AI's performance is evaluted by inspecting the reward of different trials of the course of the learning process.
