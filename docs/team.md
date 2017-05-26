@@ -12,5 +12,5 @@ title:  Team
 ## David Lu
 ***UCI Net ID***: ludm
 
-## Tetsu Kobayashi
+## Tetsuichiro Kobayashi
 ***UCI Net ID***: tjkobaya
