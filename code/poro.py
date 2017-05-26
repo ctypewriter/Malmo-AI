@@ -180,8 +180,8 @@ class Poro(object):
                         T = t + 1
                         S.append('Term State')
 
-                        R.append(1000)
-                        reward = reward + 1000
+                        R.append(100)
+                        reward = reward + 100
 
                     else: # Continue taking actions
 
