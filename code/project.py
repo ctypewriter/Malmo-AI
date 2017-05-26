@@ -45,7 +45,7 @@ missionXML = '''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
                         <DrawCuboid x1="-30" y1="4" z1="-30" x2="30" y2="30" z2="-30" type="dirt"/>
                         <DrawCuboid x1="-30" y1="4" z1="30" x2="30" y2="30" z2="30" type="dirt"/>
                     </DrawingDecorator>
-                  <ServerQuitFromTimeUp timeLimitMs="30000"/>
+                  
                   <ServerQuitWhenAnyAgentFinishes/>
                 </ServerHandlers>
               </ServerSection>
@@ -79,11 +79,9 @@ missionXML = '''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
                      </Grid>
                   </ObservationFromGrid>
                   
-                  <RewardForTimeTaken 
-                  initialReward="0"
-                  delta="-1"
-                  density="PER_TICK"
-                  />
+                  <AgentQuitFromTouchingBlockType>
+                        <Block type="diamond_block"/>
+                  </AgentQuitFromTouchingBlockType>
                   
 
                 </AgentHandlers>

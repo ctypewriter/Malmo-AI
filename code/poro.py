@@ -5,11 +5,11 @@ import math
 import json
 import random
 
-actions = ["move 1", "move -1", "jump 1", "strafe 1", "strafe -1"]
+actions = ["move .5", "move -.5", "strafe .5", "strafe -.5"] # "jump 1",
 
 
 class Poro(object):
-    def __init__(self, destx, desty, destz, alpha=1, gamma=.5, n=5 ):
+    def __init__(self, destx, desty, destz, alpha=1, gamma=.5, n=1 ):
         """Constructing an RL agent.
 
                 Args
@@ -155,6 +155,9 @@ class Poro(object):
         while not done_update:
             # Get beginning state/action
             s0 = self.get_curr_state(agent_host)
+            oldx, oldy, oldz = self.currX, self.currY, self.currZ
+            oldDistance = math.fabs(self.currX - self.x) + math.fabs(self.currY - self.y) + math.fabs(self.currZ - self.z)
+
             possible_actions = self.get_possible_actions(agent_host)
 
             a0 = self.choose_action(s0, possible_actions, self.epsilon)
@@ -172,26 +175,31 @@ class Poro(object):
 
                     # Terminal State check
                     world_state = agent_host.getWorldState()
-                    if (math.fabs(self.currX - self.x) < 2 and math.fabs(self.currY - self.y) < 2 and math.fabs(self.currZ - self.z) < 2):
+
+                    if not world_state.is_mission_running:
                         T = t + 1
                         S.append('Term State')
 
                         R.append(1000)
                         reward = reward + 1000
 
-                    # Mission failed state
-                    elif not world_state.is_mission_running:
-                        T = t + 1
-                        S.append('Fail State')
+                    else: # Continue taking actions
 
-                        R.append(-math.fabs(self.currX - self.x) - math.fabs(self.currY - self.y) - math.fabs(self.currZ - self.z))
-                        reward = reward - math.fabs(self.currX - self.x) - math.fabs(self.currY - self.y) - math.fabs(self.currZ - self.z)
-                    # Continue taking actions
-                    else:
-                        # Reward is the x + y + z distance from the goal
-                        R.append(-math.fabs(self.currX - self.x) - math.fabs(self.currY - self.y) - math.fabs(self.currZ - self.z))
-                        reward += -math.fabs(self.currX - self.x) - math.fabs(self.currY - self.y) - math.fabs(self.currZ - self.z)
+                        # Sets currX/Y/Z
                         s = self.get_curr_state(agent_host)
+                        newDistance = math.fabs(self.currX - self.x) + math.fabs(self.currY - self.y) + math.fabs(self.currZ - self.z)
+
+                        # Reward based on distance gained or lost from goal ( x + y + z, NOT TRUE DISTANCE)
+                        R.append(oldDistance - newDistance - .5)
+                        reward += oldDistance - newDistance - .5
+
+                        print "Reward change: ", oldDistance - newDistance - 1
+
+                        oldDistance = newDistance
+
+                        oldx, oldy, oldz = self.currX, self.currY, self.currZ
+
+
 
                         S.append(s)
                         possible_actions = self.get_possible_actions(agent_host)
@@ -218,9 +226,9 @@ class Poro(object):
     def act(self, agent_host, action):
 
         # If moving forward/backward, stop strafing, if strafing, stop moving back/forward
-        if action == "move 1" or action == "move -1":
+        if action.startswith("move"):
             agent_host.sendCommand("strafe 0")
-        elif action == "strafe 1" or action == "strafe -1":
+        elif action.startswith("strafe"):
             agent_host.sendCommand("move 0")
 
         agent_host.sendCommand(action)
@@ -229,6 +237,9 @@ class Poro(object):
         # Prevent ai from being jump happy
         agent_host.sendCommand("jump 0")
         time.sleep(.5) # Let action resolve/ AI land
+
+        agent_host.sendCommand("move 0")
+        agent_host.sendCommand("strafe 0")
 
     def choose_action(self, curr_state, possible_actions, eps):
         """Chooses an action according to eps-greedy policy. """
