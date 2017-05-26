@@ -12,7 +12,7 @@ Video link goes HERE
 ## Approach
   The AI uses q-learning, specifically, it creates a q-table which for each state, lists the expected reward for each action that can be done in that state. The rewards are initially 0 and the q-table is learned through randomly selecting actions in the beginning. As some q values change, the AI selects the highest q-value action in the current state a majority of the time (1-epsilon probabilty) and randomly chooses a random action with epsilon probablity. The q table is updated using the following formula in the case where future actions do not propagate down and affect the currect q value.
   
-  Q(s,a) = Q(s,a) + alpha( gamma( previous reward + q value of next action) - Q(s,a) )
+    Q(s,a) = Q(s,a) + alpha( gamma( previous reward + q value of next action) - Q(s,a) )
   
   where gamma and alpha are user specified variables. Alpha affects how quickly Q values change and Gamma affects the weight of the current reward and expected reward.
   
