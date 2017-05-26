@@ -19,9 +19,8 @@ text here.
 
 This is another paragraph.
 
-This is a list:
-
-- Orange
+Links:
+- [Source Code Repository][code_rep]
 - Apple
 - Blueberry
 
@@ -30,5 +29,5 @@ This is a list:
 Just getting started with Markdown?
 See the [HTML <-> Markdown Quick Reference (Cheat Sheet)][quickref].
 
-
+[code_rep]: https://github.com/ctypewriter/Poro-Pathfinder/tree/master/code
 [quickref]: https://github.com/mundimark/quickrefs/blob/master/HTML.md
