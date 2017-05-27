@@ -10,7 +10,7 @@ to reach certain locations in the arena.  The AI will traverse
 through obstacles such as hills, pitfalls, and monsters while
 also learning to reach the goal more efficiently.
 
-![gameplay](https://github.com/ctypewriter/Poro-Pathfinder/blob/master/docs/game_screenshot.png?true)
+![gameplay](https://raw.githubusercontent.com/ctypewriter/Poro-Pathfinder/master/docs/game_screenshot.png)
 
 # Links
 ---
