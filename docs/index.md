@@ -5,10 +5,10 @@ title:  Home
 
 # Welcome to the Poro Pathfinder Homepage!
 ---
-The project focuses on using q-learning for the AI to learn
-to reach certain locations in the arena.  The AI will traverse
-through obstacles such as hills, pitfalls, and monsters while
-also learning to reach the goal more efficiently.
+The project focuses on using reinforcement learning in the form
+of q-learning.  The AI will traverse through obstacles such as 
+hills, pitfalls, and monsters while using q-learning to traverse
+those obstacles more efficiently.
 
 ![gameplay](https://raw.githubusercontent.com/ctypewriter/Poro-Pathfinder/master/docs/game_screenshot.png)
 
