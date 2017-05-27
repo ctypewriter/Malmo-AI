@@ -33,7 +33,7 @@ Video link goes HERE
   
 ![State Figure](https://raw.githubusercontent.com/ctypewriter/Malmo-AI/master/docs/StateDemo.PNG)
 
-The above figure shows the approximation the AI uses to determine the general direction to the goal, depending on which quadrant the AI currently resides in. This means, for example, if the agent was to the south of the goal, the variable would be set as N (for North).  This approximation is the core to the AI because it limits the state space, giving the AI just enough information to make its way to the goal, but not encumbering it with an excess number of states. By limiting the number of states, the AI is able to learn, and then recognize a few, specific situations, as opposed to learning optimal actions in every single tile of the world or some other unreasonable metric.
+The above figure shows the approximation the AI uses to determine the general direction to the goal, depending on which quadrant the AI currently resides in. This means, for example, if the agent was to the south of the goal, the variable would be set as N (for North).  However, for example, if the agent was to the southeast of the goal, the variable would be set as W if the x-coordinate distance to the goal is bigger than the z-coordinate distance to the goal.  If the z-coordinate distance to the goal is bigger than the x-coordinate distance to the goal, the variable would be set as N.  This approximation is the core to the AI because it limits the state space, giving the AI just enough information to make its way to the goal, but not encumbering it with an excess number of states. By limiting the number of states, the AI is able to learn, and then recognize a few, specific situations, as opposed to learning optimal actions in every single tile of the world or some other unreasonable metric.
 
 
 ### Reward:
@@ -46,7 +46,7 @@ The AI also receives a reward for reaching its goal (touching its goal).
 
 This reward scheme promotes actions that help the agent progress towards the goal, while punishing actions that distance the agent from the goal. The AI is thus able to quickly learn favorable actions. 
 
-### Tying it together:
+### Tying It Together:
 
   Whenever the AI takes an action, it uses the reward gained or lost to rate the performance of the action, making it more likely to do the action in the future if the reward was positive. Conversely, actions that result in negative rewards are less likely to be done in the future. On top of this, the AI also rates the action based on the expected value of the next state/action pair, which propagates down to previous actions. Because of this, even though an action may have an immediate, negative reward, it may still be chosen in the future if the resulting state generally performs well. The AI learns from each action, which carries over from trial to trial, resulting in relatively consistant performance as trials progress.
   
