@@ -25,4 +25,5 @@ those obstacles more efficiently.
 [code_rep]: https://github.com/ctypewriter/Poro-Pathfinder/tree/master/code
 [prop]: https://ctypewriter.github.io/Poro-Pathfinder/proposal.html
 [stat]: https://ctypewriter.github.io/Poro-Pathfinder/status.html
+[vid]: https://www.youtube.com/watch?v=7FZ7O4REYaA&feature=youtu.be
 [git_rep]: https://github.com/ctypewriter/Poro-Pathfinder
