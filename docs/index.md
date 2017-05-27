@@ -24,4 +24,3 @@ also learning to reach the goal more efficiently.<br />
 [code_rep]: https://github.com/ctypewriter/Poro-Pathfinder/tree/master/code
 [prop]: https://ctypewriter.github.io/Poro-Pathfinder/proposal.html
 [stat]: https://ctypewriter.github.io/Poro-Pathfinder/status.html
-[vid]: 
