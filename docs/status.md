@@ -3,7 +3,7 @@ layout: default
 title: Status
 ---
 
-Video link goes HERE
+Video link: https://www.youtube.com/watch?v=7FZ7O4REYaA&feature=youtu.be
 
 
 ## Project Summary
