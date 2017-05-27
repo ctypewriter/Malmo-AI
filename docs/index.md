@@ -19,8 +19,10 @@ those obstacles more efficiently.
 - [Project Status][stat]
 - [Video][vid]
 - [Source Code Repository][code_rep]
+- [Github Repository][git_rep]
 
 [team]: https://ctypewriter.github.io/Poro-Pathfinder/team.html
 [code_rep]: https://github.com/ctypewriter/Poro-Pathfinder/tree/master/code
 [prop]: https://ctypewriter.github.io/Poro-Pathfinder/proposal.html
 [stat]: https://ctypewriter.github.io/Poro-Pathfinder/status.html
+[git_rep]: https://github.com/ctypewriter/Poro-Pathfinder
