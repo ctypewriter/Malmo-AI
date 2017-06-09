@@ -10,9 +10,9 @@ from math import floor
 
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)  # flush print output immediately
 
-endLocationx = 0
-endLocationy = 3
-endLocationz = 19
+endLocationx = 1
+endLocationy = 6
+endLocationz = 14
 
 # ModSettings affects simulation speed
 
@@ -113,10 +113,17 @@ if __name__ == '__main__':
     for i in range(num_runs):  # TODO change number of times to number of generations * population/generation
         my_mission = MalmoPython.MissionSpec(missionXML, True)
         my_mission_record = MalmoPython.MissionRecordSpec()
-        # my_mission.forceWorldReset()
+
+        # my_mission.forceWorldReset() # UNCOMMENT THIS WHEN CHANGING GEOGRAPHY
+
+        my_mission.drawCuboid(endLocationx - 2, endLocationy - 2, endLocationz - 2, endLocationx +2, endLocationy -2,
+                              endLocationz +2, "dirt")
+        my_mission.drawCuboid(endLocationx - 1, endLocationy - 1, endLocationz - 1, endLocationx + 1, endLocationy -1,
+                              endLocationz + 1, "dirt")
         my_mission.drawBlock(endLocationx, endLocationy, endLocationz, "diamond_block")  # Draws the target location
 
 
+        #my_mission.drawBlock(endLocationx, endLocationy, endLocationz, "diamond_block")  # Draws the target location
 
 
         # Attempt to start a mission:
@@ -140,11 +147,6 @@ if __name__ == '__main__':
 
 
         world_state = agent_host.getWorldState()
-        # grid = po.load_grid(agent_host, world_state)
-        # pos = po.get_position_and_yaw(agent_host, world_state)
-        # state = po.get_curr_state(grid, pos)
-        # for reward in world_state.rewards:
-        #     print reward.getValue()
 
         print i, ' ',
         po.run(agent_host)
