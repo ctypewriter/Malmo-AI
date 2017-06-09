@@ -3,32 +3,27 @@ layout: default
 title:  Home
 ---
 
-_Add your text here_
+# Welcome to the Poro Pathfinder Homepage!
+---
+The project focuses on using reinforcement learning in the form
+of q-learning.  The AI will traverse through obstacles such as 
+hills, pitfalls, and monsters while using q-learning to traverse
+those obstacles more efficiently.
 
+![gameplay](https://raw.githubusercontent.com/ctypewriter/Poro-Pathfinder/master/docs/game_screenshot.png)
 
-What's Markdown (`.md`)?
+# Links
+---
+- [Team Members][team]
+- [Proposal][prop]
+- [Project Status][stat]
+- [Video][vid]
+- [Source Code Repository][code_rep]
+- [Github Repository][git_rep]
 
-Markdown is markup that lets you write hypertext (HTML) documents
-in easy-to-read and easy-to-write plain text.
-No angle brackets `<></>` required for
-paragraphs, lists, blockquotes, tables, etc.
-
-
-This is a paragraph (in Markdown). Some more
-text here.
-
-This is another paragraph.
-
-This is a list:
-
-- Orange
-- Apple
-- Blueberry
-
-
-
-Just getting started with Markdown?
-See the [HTML <-> Markdown Quick Reference (Cheat Sheet)][quickref].
-
-
-[quickref]: https://github.com/mundimark/quickrefs/blob/master/HTML.md
+[team]: https://ctypewriter.github.io/Poro-Pathfinder/team.html
+[code_rep]: https://github.com/ctypewriter/Poro-Pathfinder/tree/master/code
+[prop]: https://ctypewriter.github.io/Poro-Pathfinder/proposal.html
+[stat]: https://ctypewriter.github.io/Poro-Pathfinder/status.html
+[vid]: https://www.youtube.com/watch?v=7FZ7O4REYaA&feature=youtu.be
+[git_rep]: https://github.com/ctypewriter/Poro-Pathfinder
