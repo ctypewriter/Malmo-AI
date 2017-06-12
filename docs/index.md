@@ -29,5 +29,5 @@ those obstacles more efficiently.
 [stat]: https://ctypewriter.github.io/Poro-Pathfinder/status.html
 [final]: https://ctypewriter.github.io/Poro-Pathfinder/final.html
 [vid1]: https://www.youtube.com/watch?v=7FZ7O4REYaA&feature=youtu.be
-[vid2]: https://www.youtube.com/watch?v=VOG9HmKaOFo&feature=youtu.be
+[vid2]: https://youtu.be/KuW1auH_IhM
 [git_rep]: https://github.com/ctypewriter/Poro-Pathfinder
