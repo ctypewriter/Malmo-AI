@@ -10,7 +10,7 @@ title: Final Report
 
 
 ## Project Summary
-  The goal of our AI is to create a self-learning, pathfinding AI that uses continuous movement to make its way to a target location indicated by the diamond block. It is able to jump up hills and climb mountains to it's goal if neccessary, but also find quick and efficient paths towards the goal on flat land. The AI uses reinforcement learning (q-learning) to gradually learn an optimal policy/path to a goal.
+  The goal of our AI is to create a self-learning, pathfinding AI that uses continuous movement to make its way to a target location indicated by the diamond block in a Minecraft enviornment through Project Malmo. It is able to jump up hills and climb mountains to it's goal if neccessary, but also find quick and efficient paths towards the goal on flat land. The AI uses reinforcement learning (q-learning) to gradually learn an optimal policy/path to a goal.
   
   ![State Figure](https://raw.githubusercontent.com/ctypewriter/Poro-Pathfinder/master/docs/Goalpic.PNG)
   
@@ -51,5 +51,19 @@ title: Final Report
   This approximation is the core to the AI because it limits the state space, giving the AI just enough information to make its way to the goal, but not encumbering it with an excess number of states. By limiting the number of states, the AI is able to learn, and then recognize a few, specific situations, as opposed to learning optimal actions in every single tile of the world or some other unreasonable metric.
 
   As a result of these states, the AI is able to gradually take in information as it makes it way to the goal. At any given moment in time, the AI requires very little information, compare to other algorithms that must take the entire enviorment before calcuating a path to the goal. As such, this AI requires comparatively less resources in memory, but may require more calcuations as it must constantly evaluate states and update q values in the q table.
+  
+  ### Reward:
+
+  The reward acts as both a rating of the AI as well as helping the AI learn ideal actions for each state. The way the reward is determined is by measuring the change in a straight line distance from the AI to the goal between actions. A negative constant (c) is then added on to the reward to teach the AI not to do stagnant actions (such as walking into a wall).
+
+    Reward for an action = oldDistance from goal - newDistance from goal - c
+
+  The AI also receives a reward for reaching its goal (touching its goal).
+
+This reward scheme promotes actions that help the agent progress towards the goal, while punishing actions that distance the agent from the goal. The AI is thus able to quickly learn favorable actions while discrediting disfavorable actions. This also helps the AI learn that walking off cliffs when the goal is above is disfavorable, teaching the AI situational decision making.
+
+### Tying It Together:
+
+  Whenever the AI takes an action, it uses the reward gained or lost to rate the performance of the action, making it more likely to do the action in the future if the reward was positive. Conversely, actions that result in negative rewards are less likely to be done in the future. On top of this, the AI also rates the action based on the expected value of the next state/action pair, which propagates down to previous actions. Because of this, even though an action may have an immediate, negative reward, it may still be chosen in the future if the resulting state generally performs well. The AI learns from each action, which carries over from trial to trial, resulting in relatively consistant performance as trials progress.
   
   
