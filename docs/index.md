@@ -11,12 +11,16 @@ hills, pitfalls, and monsters while using q-learning to traverse
 those obstacles more efficiently.
 
 ![gameplay](https://raw.githubusercontent.com/ctypewriter/Poro-Pathfinder/master/docs/game_screenshot.png)
+Poro tries to learn to reach the goal through a flat world.
+![screenshot](https://raw.githubusercontent.com/ctypewriter/Poro-Pathfinder/master/docs/screenshot2.png)
+Poro tries to learn to reach the goal on top of a hill.
 
 # Links
 ---
 - [Team Members][team]
 - [Proposal][prop]
 - [Project Status][stat]
+- [Final Report][final]
 - [Video][vid]
 - [Source Code Repository][code_rep]
 - [Github Repository][git_rep]
@@ -25,5 +29,6 @@ those obstacles more efficiently.
 [code_rep]: https://github.com/ctypewriter/Poro-Pathfinder/tree/master/code
 [prop]: https://ctypewriter.github.io/Poro-Pathfinder/proposal.html
 [stat]: https://ctypewriter.github.io/Poro-Pathfinder/status.html
+[final]: https://ctypewriter.github.io/Poro-Pathfinder/final.html
 [vid]: https://www.youtube.com/watch?v=7FZ7O4REYaA&feature=youtu.be
 [git_rep]: https://github.com/ctypewriter/Poro-Pathfinder
