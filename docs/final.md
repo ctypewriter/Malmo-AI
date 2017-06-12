@@ -7,8 +7,6 @@ title: Final Report
 # EMBED VIDEO GOES HERE
 
 
-
-
 ## Project Summary
   The goal of our AI is to create a self-learning, pathfinding AI that uses continuous movement to make its way to a target location indicated by the diamond block in a Minecraft enviornment through Project Malmo. It is able to jump up hills and climb mountains to it's goal if neccessary, but also find quick and efficient paths towards the goal on flat land. The AI uses reinforcement learning (q-learning) to gradually learn an optimal policy/path to a goal.
   
@@ -66,4 +64,24 @@ This reward scheme promotes actions that help the agent progress towards the goa
 
   Whenever the AI takes an action, it uses the reward gained or lost to rate the performance of the action, making it more likely to do the action in the future if the reward was positive. Conversely, actions that result in negative rewards are less likely to be done in the future. On top of this, the AI also rates the action based on the expected value of the next state/action pair, which propagates down to previous actions. Because of this, even though an action may have an immediate, negative reward, it may still be chosen in the future if the resulting state generally performs well. The AI learns from each action, which carries over from trial to trial, resulting in relatively consistant performance as trials progress.
   
+  ## Evaluation
+
+  The total reward is a function of the distance traveled, a base reward for reaching the goal, and the number of actions taken (n). 
   
+      Total Reward = Goal reward + start distance from goal - n * negative reward for action
+
+  Based on the above formula, the reward is inversely proportional to the number of actions taken to reach the goal. As such, the AI's performance is evaluted by inspecting the reward of different trials of the course of the learning process. (Higher reward = less actions taken = Better Performance)
+
+![Reward Plot](https://raw.githubusercontent.com/ctypewriter/Poro-Pathfinder/master/docs/RewardvsTrialHills.PNG)
+
+  The above graph shows that the AI works as expected. During the first trial, it has no information about its expected rewards for each state/action pair, so it requires a couple of actions to realize the optimal action. Similarly at trial 4, the AI gets confused as it encounters a new state for the first time and takes a good amount of trial and error before it eventually learns the correct action. 
+  
+  After it deals with the initial hickups, the AI's performance becomes consistant as it reaches its optimal policy and levels out after trial 6. As can be seen, the optimal strategy is reached within a couple of trials as expected due to the generalized states. The AI only needs to learn actions for each state rather than each position the agent is at. 
+  
+  Small variances between trials is expected due to the greedy epsilon algorithm which causes the AI to occasionally choose non-optimal solutions. As such, it is expected that trials differ slightly from one to another.
+  
+  ## References
+  
+  Project malmo: https://www.microsoft.com/en-us/research/project/project-malmo/
+  Q-Learning: https://en.wikipedia.org/wiki/Q-learning
+  A* Algorithm (For performance comparison): https://en.wikipedia.org/wiki/A*_search_algorithm
