@@ -10,10 +10,7 @@ of q-learning.  The AI will traverse through obstacles such as
 hills, pitfalls, and monsters while using q-learning to traverse
 those obstacles more efficiently.
 
-![gameplay](https://raw.githubusercontent.com/ctypewriter/Poro-Pathfinder/master/docs/game_screenshot.png)
-Poro tries to learn to reach the goal through a flat world.
 ![screenshot](https://raw.githubusercontent.com/ctypewriter/Poro-Pathfinder/master/docs/screenshot2.png)
-Poro tries to learn to reach the goal on top of a hill.
 
 # Links
 ---
