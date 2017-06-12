@@ -34,7 +34,7 @@ title: Final Report
   
   Epsilon greedy q-learning quickly converages to a good policy, making it a good algorithm for this AI. However, epsilon greedy algorithms have a problem when a long series of actions must be correct to reach the goal. For example, if the AI must travel straight 1000 units on a bridge to the goal, an epsilon greedy algorithm that chooses a random action even 1% of the time will fail to reach the goal countless times, making the algorithm a poor choice for situations where percision is core. However, this is an edge case which the average minecraft player will not encounter frequently and thus the AI will ignore such situations.
   
-  ### States:
+### States:
 
   Since q-learning learns optimal actions at each state, it is important to limit the number of states, enabling the AI to quickly converge towards the optimum policy. To do so, the AI uses 2 different pieces of information to determine its current state: The features of its immediate surrounding area, and its distance to the goal.
 
@@ -52,7 +52,7 @@ title: Final Report
 
   As a result of these states, the AI is able to gradually take in information as it makes its way to the goal. At any given moment in time, the AI requires very little information compared to other algorithms, such as ones that take in the entire environment.  As such, this AI requires comparatively less resources in memory, but may require more calcuations as it must constantly evaluate states and update q values in the q table.
   
-  ### Reward:
+### Reward:
 
   The reward acts as both a rating of the AI and a help tool for the AI to learn ideal actions for each state. The way the reward is determined is by measuring the change in a straight line distance from the AI to the goal between actions. A negative constant c is then added on to the reward to teach the AI not to do stagnant actions (such as walking into a wall).
 
@@ -66,7 +66,7 @@ This reward scheme promotes actions that help the agent progress towards the goa
 
   Whenever the AI takes an action, it uses the reward gained or lost to rate the performance of the action, making it more likely to do the actions that rated positive reward in the future. Conversely, actions that result in negative rewards are less likely to be done in the future. On top of this, the AI also rates the action based on the expected value of the next state/action pair, which propagates down to previous actions. Because of this, even though an action may have an immediate, negative reward, it may still be chosen in the future if the resulting state generally performs well. The AI learns from each action, which carries over from trial to trial, resulting in relatively consistant performance as trials progress.
   
-  ## Evaluation
+## Evaluation
 
   The total reward is a function of the distance traveled, a base reward for reaching the goal, and the number of actions taken (n). 
   
@@ -82,7 +82,7 @@ This reward scheme promotes actions that help the agent progress towards the goa
   
   Small variances between trials is expected due to the greedy epsilon algorithm which causes the AI to occasionally choose non-optimal solutions. As such, it is expected that trials differ slightly from one to another.
   
-  ## References
+## References
   
   Project malmo: https://www.microsoft.com/en-us/research/project/project-malmo/
   
