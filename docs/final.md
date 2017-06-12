@@ -13,6 +13,8 @@ title: Final Report
   ![State Figure](https://raw.githubusercontent.com/ctypewriter/Poro-Pathfinder/master/docs/Goalpic.PNG)
   
   Reinforcement learning is used to reach the goal when LIMITED information is known about the enviorment due to hardware constraints, lack of knowledge, or saving on resources. While other known algorithms such as A* or Dijkstra's will have better perforcemance than the AI when the entire enviorment is known, this AI will outperform the mentioned algorithms in resource usage and scalability. The AI requires information about its immediate surroundings, coordinates of itself, and its goal, as opposed to the entire world. As a result, in enormous worlds where regular pathfinding algorithms would fail, this AI will still perform adequately.
+  
+  While a basic AI that runs directly at the goal while jumping will perform better than our AI in the test case, it will fail if a single wall is between  the agent and the goal. Our AI can navigate around obstacles and up hills as needed, making it suitable for randomized enviorments where simple AIs will fail.
 
 
 ## Approach
@@ -47,6 +49,8 @@ title: Final Report
   The above figure shows the approximation the AI uses to determine the general direction to the goal, depending on which quadrant the AI currently resides in. This means, for example, if the agent was to the south of the goal, the variable would be set as N (for North).  However, for example, if the agent was to the southeast of the goal, the variable would be set as W if the x-coordinate distance to the goal is bigger than the z-coordinate distance to the goal.  If the z-coordinate distance to the goal is bigger than the x-coordinate distance to the goal, the variable would be set as N.  
 
   This approximation is the core to the AI because it limits the state space, giving the AI just enough information to make its way to the goal, but not encumbering it with an excess number of states. By limiting the number of states, the AI is able to learn, and then recognize a few, specific situations, as opposed to learning optimal actions in every single tile of the world or some other unreasonable metric.
+  
+  The total number of states comes out to be 4 (number of directions) * 4^4 (feature of each surrounding block) for a total of 1024 different unique states. This is definitely a none trivial number of states, but still outperforms A* which would require block information many times as much for large enviornments.
 
   As a result of these states, the AI is able to gradually take in information as it makes it way to the goal. At any given moment in time, the AI requires very little information, compare to other algorithms that must take the entire enviorment before calcuating a path to the goal. As such, this AI requires comparatively less resources in memory, but may require more calcuations as it must constantly evaluate states and update q values in the q table.
   
