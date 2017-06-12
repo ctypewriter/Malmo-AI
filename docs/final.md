@@ -83,5 +83,7 @@ This reward scheme promotes actions that help the agent progress towards the goa
   ## References
   
   Project malmo: https://www.microsoft.com/en-us/research/project/project-malmo/
+  
   Q-Learning: https://en.wikipedia.org/wiki/Q-learning
+  
   A* Algorithm (For performance comparison): https://en.wikipedia.org/wiki/A*_search_algorithm
